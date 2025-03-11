@@ -42,7 +42,9 @@ RUN make
 RUN make install
 RUN echo "LOCAL1" > /etc/sympa/facility
 RUN yes |apt-get install rsyslog --yes
-COPY ./etc /etc
+COPY ./etc/service /etc/runit/runsvdir/current
+COPY ./etc/sympa /etc/sympa
+COPY ./etc/nginx /etc/nginx
 
 # Cleanup
 RUN apt-get remove wget gcc make --yes && apt-get clean all && \
