@@ -1,4 +1,4 @@
-FROM nginx:1.15.8-perl
+FROM nginx:1.27.4-perl
 
 ENV FCGI_HOST 127.0.0.1
 ENV FCGI_PORT 9000
@@ -31,11 +31,11 @@ RUN apt-get update -q -q && \
 RUN apt-get install nullmailer --yes
 
 # Sympa manual installation
-RUN wget https://www.sympa.org/_media/distribution/releases/sympa-6.2.38.tar.gz && wget https://www.sympa.org/_media/distribution/releases/sympa-6.2.38.tar.gz.md5 && md5sum -c sympa-6.2.38.tar.gz.md5
+RUN wget https://github.com/sympa-community/sympa/releases/download/6.2.76/sympa-6.2.76.tar.gz && wget https://github.com/sympa-community/sympa/releases/download/6.2.76/sympa-6.2.76.tar.gz.sha256 && sha256sum -c sympa-6.2.76.tar.gz.sha256
 RUN apt-get install gcc --yes
 RUN groupadd sympa && useradd -g sympa -c 'Sympa user' -b /var/lib -s /bin/sh sympa
-RUN tar -xzf sympa-6.2.38.tar.gz
-WORKDIR sympa-6.2.38
+RUN tar -xzf sympa-6.2.76.tar.gz
+WORKDIR sympa-6.2.76
 RUN ./configure --enable-fhs --prefix=/usr/local --with-confdir=/etc/sympa 
 RUN apt-get install make --yes
 RUN make
@@ -46,7 +46,7 @@ COPY ./etc /etc
 
 # Cleanup
 RUN apt-get remove wget gcc make --yes && apt-get clean all && \
-    rm -Rf /sympa-6.2.38*
+    rm -Rf /sympa-6.2.76*
 # XXX FOR DEBUG PURPOSE
 #RUN apt-get install vim --yes
 
