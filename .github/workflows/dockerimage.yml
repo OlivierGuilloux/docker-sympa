@@ -18,5 +18,7 @@ jobs:
       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
     - name: Push to DockerHub
       run: docker push avelgornog/docker-sympa-ws:latest
+    - name: Tag with version
+      run: docker tag avelgornog/docker-sympa-ws:latest avelgornog/docker-sympa-ws:${{ github.ref_name }}
     - name: Push to DockerHub
       run: docker push avelgornog/docker-sympa-ws:${{ github.ref_name }}
