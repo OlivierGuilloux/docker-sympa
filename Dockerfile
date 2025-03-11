@@ -15,6 +15,7 @@ VOLUME /etc/sympa/shared
 VOLUME /var/spool/sympa
 VOLUME /var/lib/sympa
 VOLUME /var/spool/nullmailer
+VOLUME /etc/sympa/sympa.conf
 
 #
 ## We additionally install recommended Sympa packages which are libraries.
@@ -46,6 +47,7 @@ COPY ./etc/service /etc/runit/runsvdir/current
 COPY ./etc/sympa /etc/sympa
 COPY ./etc/nginx /etc/nginx
 
+WORKDIR /etc/sympa
 # Cleanup
 RUN apt-get remove wget gcc make --yes && apt-get clean all && \
     rm -Rf /sympa-6.2.76*
@@ -59,7 +61,6 @@ RUN mkdir -p /var/lib/sympa/list_data && \
     mkdir -p /var/lib/sympa/list_data
 
 # Update sympa conf
-WORKDIR /etc/sympa
 RUN /bin/bash conf.sh
 # runit startup
 COPY runservices /usr/sbin/

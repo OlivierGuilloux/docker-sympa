@@ -19,4 +19,4 @@ jobs:
     - name: Push to DockerHub
       run: docker push avelgornog/docker-sympa-ws:latest
     - name: Push to DockerHub
-      run: docker push avelgornog/docker-sympa-ws:{{ github.ref_name }}
+      run: docker push avelgornog/docker-sympa-ws:${{ github.ref_name }}
