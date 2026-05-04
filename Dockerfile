@@ -36,7 +36,7 @@ RUN wget https://github.com/sympa-community/sympa/releases/download/6.2.76/sympa
 RUN apt-get install gcc --yes
 RUN groupadd sympa && useradd -g sympa -c 'Sympa user' -b /var/lib -s /bin/sh sympa
 RUN tar -xzf sympa-6.2.76.tar.gz
-WORKDIR sympa-6.2.76
+WORKDIR /sympa-6.2.76
 RUN ./configure --enable-fhs --prefix=/usr/local --with-confdir=/etc/sympa 
 RUN apt-get install make --yes
 RUN make
