@@ -1,13 +1,15 @@
 FROM nginx:1.27.4-perl
 
+# Version de Sympa
+ARG version=6.2.76
+
+
 ENV FCGI_HOST 127.0.0.1
 ENV FCGI_PORT 9000
 ENV FCGI_SOAP_PORT 10000
 ENV ADMINADDR admin@example.com
 ENV REMOTES mail.example.com
 ENV DEBIAN_FRONTEND noninteractive
-ENV UID_MAILPIPE 1001
-ENV GID_MAILPIPE 115
 
 VOLUME /var/log/sympa
 VOLUME /etc/sympa/includes
@@ -32,11 +34,14 @@ RUN apt-get update -q -q && \
 RUN apt-get install nullmailer --yes
 
 # Sympa manual installation
-RUN wget https://github.com/sympa-community/sympa/releases/download/6.2.76/sympa-6.2.76.tar.gz && wget https://github.com/sympa-community/sympa/releases/download/6.2.76/sympa-6.2.76.tar.gz.sha256 && sha256sum -c sympa-6.2.76.tar.gz.sha256
+RUN echo 'Téléchargement de la version Sympa https://github.com/sympa-community/sympa/releases/download/${version}/sympa-${version}.tar.gz' && \
+    wget https://github.com/sympa-community/sympa/releases/download/${version}/sympa-${version}.tar.gz
+RUN wget https://github.com/sympa-community/sympa/releases/download/${version}/sympa-${version}.tar.gz.sha256
+RUN sha256sum -c sympa-${version}.tar.gz.sha256
 RUN apt-get install gcc --yes
 RUN groupadd sympa && useradd -g sympa -c 'Sympa user' -b /var/lib -s /bin/sh sympa
-RUN tar -xzf sympa-6.2.76.tar.gz
-WORKDIR /sympa-6.2.76
+RUN tar -xzf sympa-${version}.tar.gz
+WORKDIR /sympa-${version}
 RUN ./configure --enable-fhs --prefix=/usr/local --with-confdir=/etc/sympa 
 RUN apt-get install make --yes
 RUN make
@@ -47,10 +52,12 @@ COPY ./etc/service /etc/runit/runsvdir/current
 COPY ./etc/sympa /etc/sympa
 COPY ./etc/nginx /etc/nginx
 
-WORKDIR /etc/sympa
+# Set permissions
+RUN chown sympa.sympa -R /etc/sympa
+
 # Cleanup
 RUN apt-get remove wget gcc make --yes && apt-get clean all && \
-    rm -Rf /sympa-6.2.76*
+    rm -Rf /sympa-${version}*
 # XXX FOR DEBUG PURPOSE
 #RUN apt-get install vim --yes
 
@@ -61,6 +68,7 @@ RUN mkdir -p /var/lib/sympa/list_data && \
     mkdir -p /var/lib/sympa/list_data
 
 # Update sympa conf
+WORKDIR /etc/sympa
 RUN /bin/bash conf.sh
 # runit startup
 COPY runservices /usr/sbin/
