@@ -11,13 +11,16 @@ ENV ADMINADDR admin@example.com
 ENV REMOTES mail.example.com
 ENV DEBIAN_FRONTEND noninteractive
 
-VOLUME /var/log/sympa
 VOLUME /etc/sympa/includes
 VOLUME /etc/sympa/shared
-VOLUME /var/spool/sympa
-VOLUME /var/lib/sympa
-VOLUME /var/spool/nullmailer
 VOLUME /etc/sympa/sympa.conf
+
+VOLUME /var/lib/sympa
+VOLUME /var/log/sympa
+VOLUME /var/spool/nullmailer
+VOLUME /var/spool/sympa
+
+
 
 #
 ## We additionally install recommended Sympa packages which are libraries.
