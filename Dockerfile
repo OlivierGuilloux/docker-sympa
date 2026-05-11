@@ -52,6 +52,9 @@ RUN make
 RUN make install
 RUN echo "LOCAL1" > /etc/sympa/facility
 RUN yes |apt-get install rsyslog --yes
+RUN sed -i 's/module(load="imklog")/#module(load="imklog")/g' /etc/rsyslog.conf
+
+# Configuration files
 COPY ./etc/service /etc/runit/runsvdir/current
 COPY ./etc/sympa /etc/sympa
 COPY ./etc/nginx /etc/nginx
