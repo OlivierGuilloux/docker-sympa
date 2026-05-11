@@ -28,7 +28,7 @@ VOLUME /var/spool/sympa
 COPY ./patches patches
 # Install packages
 RUN apt-get update -q && \
-    apt-get upgrade -q && \
+    apt-get upgrade -y && \
     apt-get install locales --no-install-recommends --yes && \
     apt-get install openssh-server --yes && \
     echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && \
