@@ -66,7 +66,11 @@ RUN sed -i 's/module(load="imklog")/#module(load="imklog")/g' /etc/rsyslog.conf
 # Configuration files
 COPY ./etc/service /etc/runit/runsvdir/current
 COPY ./etc/sympa /etc/sympa
+# NGINX
 COPY ./etc/nginx /etc/nginx
+RUN export FCGI_SOCKET_PATH="$FCGI_HOST:$FCGI_PORT"
+RUN export FCGI_SOCKET_PATH="$FCGI_HOST:$FCGI_SOAP_PORT" 
+
 
 # Set permissions
 RUN chown sympa.sympa -R /etc/sympa
