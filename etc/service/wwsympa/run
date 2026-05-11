@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+export FCGI_SOCKET_PATH="$FCGI_HOST:$FCGI_PORT"
+
 # Sleep so that main Sympa process can start and prepare everything
 sleep 10
 
