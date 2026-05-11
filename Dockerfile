@@ -27,12 +27,13 @@ VOLUME /var/spool/sympa
 #
 COPY ./patches patches
 # Install packages
-RUN apt-get update -q -q && \
- apt-get install locales --no-install-recommends --yes && \
- apt-get install openssh-server --yes && \
- echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && \
- dpkg-reconfigure locales && \
- apt-get install sendmail runit libfcgi-perl libglib2.0-data shared-mime-info libio-socket-ip-perl libio-socket-inet6-perl krb5-locales libmime-types-perl libsasl2-modules libhtml-form-perl libhttp-daemon-perl libxml-sax-expat-perl xml-core libfile-nfslock-perl libsoap-lite-perl libmail-dkim-perl libdatetime-perl libdbi-perl libxml-libxml-perl libxml-perl libmime-encwords-perl libunicode-linebreak-perl libintl-perl libfile-copy-recursive-perl libterm-progressbar-perl libnet-cidr-perl libcgi-pm-perl libtemplate-perl libhtml-stripscripts-parser-perl libarchive-zip-perl libdatetime-format-mail-perl libmime-lite-html-perl libdbd-pg-perl cpanminus spawn-fcgi mhonarc wget --yes
+RUN apt-get update -q && \
+    apt-get upgrade -q && \
+    apt-get install locales --no-install-recommends --yes && \
+    apt-get install openssh-server --yes && \
+    echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && \
+    dpkg-reconfigure locales && \
+    apt-get install sendmail runit libfcgi-perl libglib2.0-data shared-mime-info libio-socket-ip-perl libio-socket-inet6-perl krb5-locales libmime-types-perl libsasl2-modules libhtml-form-perl libhttp-daemon-perl libxml-sax-expat-perl xml-core libfile-nfslock-perl libsoap-lite-perl libmail-dkim-perl libdatetime-perl libdbi-perl libxml-libxml-perl libxml-perl libmime-encwords-perl libunicode-linebreak-perl libintl-perl libfile-copy-recursive-perl libterm-progressbar-perl libnet-cidr-perl libcgi-pm-perl libtemplate-perl libhtml-stripscripts-parser-perl libarchive-zip-perl libdatetime-format-mail-perl libmime-lite-html-perl libdbd-pg-perl cpanminus spawn-fcgi mhonarc wget --yes
 # Install nullmailer and dependancies
 RUN apt-get install nullmailer --yes
 
