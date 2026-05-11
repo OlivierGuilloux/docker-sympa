@@ -50,6 +50,8 @@ RUN ./configure --enable-fhs --prefix=/usr/local --with-confdir=/etc/sympa
 RUN apt-get install make --yes
 RUN make
 RUN make install
+
+# Log System
 RUN echo "LOCAL1" > /etc/sympa/facility
 RUN yes |apt-get install rsyslog --yes
 RUN sed -i 's/module(load="imklog")/#module(load="imklog")/g' /etc/rsyslog.conf
@@ -63,7 +65,10 @@ COPY ./etc/nginx /etc/nginx
 RUN chown sympa.sympa -R /etc/sympa
 
 # Cleanup
-RUN apt-get remove wget gcc make --yes && apt-get clean all && \
+RUN apt-get remove wget gcc make --yes && \
+    apt-get clean all && \
+    apt-get autoremove -y && \
+    apt-get autoclean -y && \
     rm -Rf /sympa-${version}*
 # XXX FOR DEBUG PURPOSE
 #RUN apt-get install vim --yes
