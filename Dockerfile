@@ -37,17 +37,24 @@ RUN apt-get update -q && \
 # Install nullmailer and dependancies
 RUN apt-get install nullmailer --yes
 
-# Sympa manual installation
+# ==== Sympa manual installation ====
+# Download sources
 RUN echo 'Téléchargement de la version Sympa https://github.com/sympa-community/sympa/releases/download/${version}/sympa-${version}.tar.gz' && \
     wget https://github.com/sympa-community/sympa/releases/download/${version}/sympa-${version}.tar.gz
+# Check download intergity
 RUN wget https://github.com/sympa-community/sympa/releases/download/${version}/sympa-${version}.tar.gz.sha256
 RUN sha256sum -c sympa-${version}.tar.gz.sha256
-RUN apt-get install gcc --yes
-RUN groupadd sympa && useradd -g sympa -c 'Sympa user' -b /var/lib -s /bin/sh sympa
+# Install build requirements
+RUN apt-get install gcc make --yes
+# Create "sympa" group and user
+RUN groupadd sympa && \
+    useradd -g sympa -c 'Sympa user' -b /var/lib -s /bin/sh sympa
+# Extract sources
 RUN tar -xzf sympa-${version}.tar.gz
+#  Run configuration
 WORKDIR /sympa-${version}
 RUN ./configure --enable-fhs --prefix=/usr/local --with-confdir=/etc/sympa 
-RUN apt-get install make --yes
+# Build and install
 RUN make
 RUN make install
 
@@ -70,8 +77,6 @@ RUN apt-get remove wget gcc make --yes && \
     apt-get autoremove -y && \
     apt-get autoclean -y && \
     rm -Rf /sympa-${version}*
-# XXX FOR DEBUG PURPOSE
-#RUN apt-get install vim --yes
 
 # Create 
 RUN mkdir -p /var/lib/sympa/list_data && \ 
