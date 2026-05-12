@@ -3,10 +3,13 @@ FROM nginx:1.27.4-perl
 # Version de Sympa
 ARG version=6.2.76
 
-
+# Si les variables FCGI_HOST, FCGI_PORT et FCGI_SOAP_PORT ci-dessous sont ammenée à bouger,
+# il faut mettre à jour les fichiers "/etc/nginx/conf.d/fastcgi_host"
+# et "/etc/nginx/conf.d/fastcgi_soap_host" en conséquence.
 ENV FCGI_HOST 127.0.0.1
 ENV FCGI_PORT 9000
 ENV FCGI_SOAP_PORT 10000
+
 ENV ADMINADDR admin@example.com
 ENV REMOTES mail.example.com
 ENV DEBIAN_FRONTEND noninteractive
