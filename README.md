@@ -6,7 +6,6 @@ Pull the image:
 docker pull avelgornog/docker-sympa-ws
 ```
 
-Add your specifics (cf. sample/):
 ```
 FROM avelgornog/docker-sympa-ws
 
