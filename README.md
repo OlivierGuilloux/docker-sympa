@@ -1,41 +1,23 @@
-Image providing [Sympa](https://www.sympa.org/) mailing list service.
+## Ready to use sympa docker image
 
-You should make sure you mount spool and data volumes (`/var/spool/sympa`, `/var/spool/nullmailer`,
-and `/var/lib/sympa`) so that you do not lose e-mails and mailing lists data when you are
-recreating a container. If volumes are empty, image will initialize them at the first startup.
 
-The intended use of this image is that it is extended (see [cloyne/sympa](https://github.com/cloyne/docker-sympa)
-for an example) with customizations for your installation, and used together with
-[tozd/postfix](https://github.com/tozd/docker-postfix) for receiving and sending e-mails
-(see [cloyne/postfix](https://github.com/cloyne/docker-postfix) for an example how to integrate
-them together). It is configured to be used with [tozd/postgresql](https://github.com/tozd/docker-postgresql)
-PostgreSQL database, by default, running in a contained named `pgsql`. You can link containers together
-or use [tozd/hosts](https://github.com/tozd/docker-hosts). Use `REMOTES` environment variable to
-specify the container or server used for sending e-mails.
-
-**The image contains only example values and cannot run without extending (or mounting necessary files into it).**
-
-You should provide two volumes, `/etc/sympa/includes` and `/etc/sympa/shared`.
-
-`/etc/sympa/includes` should contain two files:
- * `database` – a password for `sympa` user with permissions over `sympa` PostgreSQL database at (by default) `pgsql` container
- * `cookie` – a randomly generated string used for cookie string secret
-
-`/etc/sympa/shared` is a volume shared with (for example) `cloyne/postfix`
-container to provide necessary SSH keys for communication between containers.
-
-When extending the image you should override files in the `/etc/sympa/conf.d` directory
-with ones containing your values. Moreover you probably want to define your own Sympa robot.
-
-To create a database for Sympa, `exec` into your PostgreSQL container and run:
-
+Pull the image:
 ```
-$ createuser -U postgres -DRS -PE sympa
-$ createdb -U postgres -O sympa sympa
+docker pull avelgornog/docker-sympa-ws
 ```
 
-You might have to initialize afterwards the database. Run from inside your Sympa container:
+```
+FROM avelgornog/docker-sympa-ws
 
+# Update the configuration
+COPY ./etc/sympa /etc/sympa
+RUN chown sympa.sympa -R /etc/sympa
+
+# Copy id_rsa.pub (when using ssh between postfix and sympa)
+RUN mkdir /var/lib/sympa/.ssh/ && chmod 700 /var/lib/sympa/.ssh/ && mkdir -p /var/spool/sympa/wwsbounce && mkdir -p /var/spool/sympa/bulk
+COPY ./shared/id_rsa.pub /var/lib/sympa/.ssh/
+
+# Update Locale
+RUN locale-gen fr_FR.UTF-8 && export LANG=fr_FR.UTF-8
 ```
-$ psql -h pgsql -U sympa -W -f /usr/share/sympa/bin/create_db.Pg
-```
+

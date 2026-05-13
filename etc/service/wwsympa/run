@@ -1,9 +1,8 @@
 #!/bin/bash -e
 
+export FCGI_SOCKET_PATH="$FCGI_HOST:$FCGI_PORT"
+
 # Sleep so that main Sympa process can start and prepare everything
 sleep 10
 
-export FCGI_SOCKET_PATH="$FCGI_HOST:$FCGI_PORT"
-echo fastcgi_pass "$FCGI_HOST:$FCGI_PORT;" > /etc/nginx/fastcgi_host
-
-exec chpst -u sympa:sympa /usr/lib/cgi-bin/sympa/wwsympa.fcgi 2>&1
+exec chpst -u sympa:sympa /usr/local/lib/sympa/cgi/wwsympa.fcgi 2>&1
