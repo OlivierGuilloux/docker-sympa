@@ -1,7 +1,7 @@
 FROM nginx:1.27.4-perl
 
 # Version de Sympa
-ARG version=6.2.76
+ARG version=6.2.78
 
 # Si les variables FCGI_HOST, FCGI_PORT et FCGI_SOAP_PORT ci-dessous sont ammenée à bouger,
 # il faut mettre à jour les fichiers "/etc/nginx/conf.d/fastcgi_host"
