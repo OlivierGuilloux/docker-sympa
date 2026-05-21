@@ -40,7 +40,8 @@ RUN apt-get update -q && \
 # Install nullmailer and dependancies
 RUN apt-get install nullmailer --yes
 
-# ==== Sympa manual installation ====
+# ==== Install Sympa distribution ====
+# == Installing from source ==
 # Download sources
 RUN echo 'Téléchargement de la version Sympa https://github.com/sympa-community/sympa/releases/download/${version}/sympa-${version}.tar.gz' && \
     wget https://github.com/sympa-community/sympa/releases/download/${version}/sympa-${version}.tar.gz
@@ -61,20 +62,25 @@ RUN ./configure --enable-fhs --prefix=/usr/local --with-confdir=/etc/sympa
 RUN make
 RUN make install
 
-# Log System
+# ==== Install dependent modules ====
+# Should run from "/sympa-${version}" directory
+RUN cpanm --installdeps --with-recommends .
+
+# ==== Log System ====
 RUN echo "LOCAL1" > /etc/sympa/facility
 RUN yes |apt-get install rsyslog --yes
 RUN sed -i 's/module(load="imklog")/#module(load="imklog")/g' /etc/rsyslog.conf
 
-# Configuration files
+# ==== Configuration files ====
 COPY ./etc/service /etc/runit/runsvdir/current
 COPY ./etc/sympa /etc/sympa
-# NGINX
+
+# ==== NGINX ====
 COPY ./etc/nginx /etc/nginx
 RUN export FCGI_SOCKET_PATH="$FCGI_HOST:$FCGI_PORT"
 RUN export FCGI_SOCKET_PATH="$FCGI_HOST:$FCGI_SOAP_PORT" 
 
-
+# ==== Misc ====
 # Set permissions
 RUN chown sympa.sympa -R /etc/sympa
 
@@ -85,7 +91,7 @@ RUN apt-get remove wget gcc make --yes && \
     apt-get autoclean -y && \
     rm -Rf /sympa-${version}*
 
-# Create 
+# Create directory tree
 RUN mkdir -p /var/lib/sympa/list_data && \ 
     mkdir -p /var/lib/sympa/wwsarchive && \
     mkdir -p /var/spool/sympa/wwsbounce && \ 
