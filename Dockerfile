@@ -10,6 +10,10 @@ ENV FCGI_HOST 127.0.0.1
 ENV FCGI_PORT 9000
 ENV FCGI_SOAP_PORT 10000
 
+# Variable d'environnement utilisée pour le Healcheck du conteneur.
+# => Elle sera à déclarer au sein de celui-ci.
+ENV SYMPA_FQDN change.me
+
 ENV ADMINADDR admin@example.com
 ENV REMOTES mail.example.com
 ENV DEBIAN_FRONTEND noninteractive
@@ -109,6 +113,6 @@ RUN ln -sfT /dev/stdout /var/log/syslog && \
     ln -sfT /dev/null /var/log/kern.log && \
     ln -sfT /dev/stdout /var/log/sympa.log
 
-HEALTHCHECK --interval=60s --timeout=5s CMD sympa check || exit 1
+HEALTHCHECK --interval=60s --timeout=5s CMD curl -f localhost/lists -H "Host: $SYMPA_FQDN" || exit 1
 
 ENTRYPOINT ["/usr/sbin/runservices"]
