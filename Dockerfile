@@ -109,4 +109,6 @@ RUN ln -sfT /dev/stdout /var/log/syslog && \
     ln -sfT /dev/null /var/log/kern.log && \
     ln -sfT /dev/stdout /var/log/sympa.log
 
+HEALTHCHECK --interval=60s --timeout=5s CMD sympa check || exit 1
+
 ENTRYPOINT ["/usr/sbin/runservices"]
