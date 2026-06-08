@@ -18,7 +18,6 @@ ENV ADMINADDR admin@example.com
 ENV REMOTES mail.example.com
 ENV DEBIAN_FRONTEND noninteractive
 
-VOLUME /etc/sympa/includes
 VOLUME /etc/sympa/shared
 VOLUME /etc/sympa/sympa.conf
 
