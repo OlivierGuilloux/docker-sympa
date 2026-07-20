@@ -18,6 +18,9 @@ ENV ADMINADDR admin@example.com
 ENV REMOTES mail.example.com
 ENV DEBIAN_FRONTEND noninteractive
 
+# Volume partagé avec Postfix. Contient la clé SSH à utiliser afin que Postfix puisse se
+# connecter au conteneur Sympa (livraison des e-mails aux listes de diffusion).
+# Cf. /etc/service/sympa/run
 VOLUME /etc/sympa/shared
 VOLUME /etc/sympa/sympa.conf
 
